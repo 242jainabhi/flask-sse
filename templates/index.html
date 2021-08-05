@@ -2,9 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+
+  <style>
+	#search_box {
+		width: 80%;
+		margin: auto;
+		margin-bottom: 5px;
+		padding-bottom: 5px;
+		text-align: center;
+		}
+	#search_result {margin-top:5px;}
+	h1 {text-align: center;}
+	td, th{border: 1px solid black; text-align:center;}
+	th {background: #d0e4fe;}
+
+	.transactions {
+		table-layout: fixed;
+		border-collapse: collapse;
+	}
+	.transactions tbody{
+		display: block;
+		width: 100%;
+		height: 750px;
+		overflow: auto;
+	}
+	.transactions thead tr {
+		width: 100%;
+		display: block;
+    }
+	.transactions th,
+    .transactions td {
+      width: 150px;
+    }
+
+	table {
+		margin: auto; border: 1px solid black; border-collapse:collapse;
+	}
   </style>
 </head>
 <body>
+  <h1>Realtime Transaction Generator</h1>
+  <div id="search_box" style="align:center;">
+	<h2>Search a transaction here using transaction id.</h2>
+	<form action="{{ url_for('render') }}" method="POST">
+		<label>Transaction ID:</label>
+		<input type='text' name='trans_id'>
+		<button type="submit">Fetch Transaction</button>
+	</form>
+	{% if entries %}
+	  <table id="search_result">
+	    <thead>
+			<tr>
+				<th>Transaction ID</th>
+				<th>User</th>
+				<th>Merchant</th>
+				<th>Created At</th>
+				<th>Amount</th>
+				<th>Currency</th>
+				<th>Product ID</th>
+				<th>Quantity</th>
+			</tr>
+		</thead>
+		<tbody id="table_body">
+		  {% for entry in entries %}
+		    <tr>
+				<td>{{ entry.id }}</td>
+				<td>{{ entry.user }}</td>
+				<td>{{ entry.merchant }}</td>
+				<td>{{ entry.time }}</td>
+				<td>{{ entry.amount }}</td>
+				<td>{{ entry.currency }}</td>
+				<td>{{ entry.product_id }}</td>
+				<td>{{ entry.quantity }}</td>
+			</tr>
+		  {% endfor %}
+		</tbody>
+	  </table>
+	{% endif %}
+  </div>
   <div class="transactions" id="transactions">
 	  <table id="table_2">
 		<thead>
@@ -15,18 +91,21 @@
 				<th>Created At</th>
 				<th>Amount</th>
 				<th>Currency</th>
-				<!--td>Product ID</td>
-				<td>Quantity</td-->
+				<th>Product ID</th>
+				<th>Quantity</th>
 			</tr>
 		</thead>
 		<tbody id="result-rows">
 			<!-- the area which is populated by rows -->
 		</tbody>
 		</table>
+		<!--div id="bottom" style="border:1px solid red"></div-->
 	</div>
-	
+
   <script>
     var eventSource = new EventSource("/listen")
+
+	//objDiv.scrollTop = objDiv.scrollHeight;
 
     eventSource.addEventListener("message", function(e) {
       console.log(e.data)
@@ -35,7 +114,11 @@
     eventSource.addEventListener("online", function(e) {
       // console.log(e.data.color)
       data = JSON.parse(e.data)
-      document.getElementById("result-rows").innerHTML += '<tr style="width: 20px;"><td>' + data.id + "</td>" + '<td>' + data.user+ "</td>" + '<td>' + data.merchant + "</td>" + '<td>' + data.time + "</td>" + '<td>' + data.amount+ "</td>" + '<td>' + data.currency + "</td></tr>"
+      document.getElementById("result-rows").innerHTML += '<tr style="width: 20px;"><td>' + data.id + "</td>" + '<td>' + data.user+ "</td>" + '<td>' + data.merchant + "</td>" + '<td>' + data.time + "</td>" + '<td>' + data.amount+ "</td>" + '<td>' + data.currency + "</td>" + '<td>' + data.product_id + "</td>" + '<td>' + data.quantity + "</td></tr>"
+
+
+	  var objDiv = document.getElementById("result-rows");
+	  objDiv.lastChild.scrollIntoView();
     }, true)
 
 	eventSource.onerror = () => sse.close()
