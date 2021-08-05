@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  </style>
+</head>
+<body>
+  <div class="transactions" id="transactions">
+	  <table id="table_2">
+		<thead>
+			<tr>
+				<th>Transaction ID</th>
+				<th>User</th>
+				<th>Merchant</th>
+				<th>Created At</th>
+				<th>Amount</th>
+				<th>Currency</th>
+				<!--td>Product ID</td>
+				<td>Quantity</td-->
+			</tr>
+		</thead>
+		<tbody id="result-rows">
+			<!-- the area which is populated by rows -->
+		</tbody>
+		</table>
+	</div>
+	
+  <script>
+    var eventSource = new EventSource("/listen")
+
+    eventSource.addEventListener("message", function(e) {
+      console.log(e.data)
+    }, false)
+
+    eventSource.addEventListener("online", function(e) {
+      // console.log(e.data.color)
+      data = JSON.parse(e.data)
+      document.getElementById("result-rows").innerHTML += '<tr style="width: 20px;"><td>' + data.id + "</td>" + '<td>' + data.user+ "</td>" + '<td>' + data.merchant + "</td>" + '<td>' + data.time + "</td>" + '<td>' + data.amount+ "</td>" + '<td>' + data.currency + "</td></tr>"
+    }, true)
+
+	eventSource.onerror = () => sse.close()
+  </script>
+</body>
+</html>
