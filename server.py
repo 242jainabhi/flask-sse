@@ -66,7 +66,7 @@ def listen():
                                 "amount": amount, "currency": currencies[0], "product_id": product_id, "quantity": quantity})
 
             yield f"id: 1\ndata: {_data}\nevent: online\n\n"
-            time.sleep(0.06)
+            time.sleep(0.06)  # 1 order per 60 millisecond means 1000 orders per minute
 
     return Response(respond_to_client(), mimetype='text/event-stream')
 

@@ -112,7 +112,6 @@
     }, false)
 
     eventSource.addEventListener("online", function(e) {
-      // console.log(e.data.color)
       data = JSON.parse(e.data)
       document.getElementById("result-rows").innerHTML += '<tr style="width: 20px;"><td>' + data.id + "</td>" + '<td>' + data.user+ "</td>" + '<td>' + data.merchant + "</td>" + '<td>' + data.time + "</td>" + '<td>' + data.amount+ "</td>" + '<td>' + data.currency + "</td>" + '<td>' + data.product_id + "</td>" + '<td>' + data.quantity + "</td></tr>"
 
